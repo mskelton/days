@@ -1,0 +1,10 @@
+{
+  "name": "days",
+  "scripts": {
+    "dev": "serve"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "serve": "^14.2.3"
+  }
+}
