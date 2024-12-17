@@ -113,14 +113,14 @@
 
       function animateArc(targetPercentage) {
         const arc = document.getElementById("arc")
-        const steps = 60
+        const steps = 25
         let currentPercentage = 0
 
         function step() {
-          const floored = Math.floor(currentPercentage, targetPercentage)
+          const min = Math.min(currentPercentage, targetPercentage)
 
-          if (floored !== 100) {
-            arc.setAttribute("d", describeArc(floored / 100))
+          if (min !== 100) {
+            arc.setAttribute("d", describeArc(min / 100))
           } else {
             // prettier-ignore
             const circle = [

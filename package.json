@@ -1,7 +1,7 @@
 {
   "name": "days",
   "scripts": {
-    "dev": "serve"
+    "dev": "serve public"
   },
   "devDependencies": {
     "prettier": "^3.3.3",
