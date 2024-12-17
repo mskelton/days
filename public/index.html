@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>Days</title>
+    <meta name="description" content="Counting the days till our wedding" />
+    <style>
+      html,
+      body {
+        background-color: #09090b;
+        font-family: sans-serif;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      main {
+        align-items: center;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        height: 100%;
+        justify-content: center;
+      }
+
+      .circle {
+        align-items: center;
+        background-color: #18181b;
+        border-radius: 50%;
+        display: flex;
+        height: 20rem;
+        justify-content: center;
+        position: relative;
+        width: 20rem;
+      }
+
+      .circle svg {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+      }
+
+      h1 {
+        color: #fafafa;
+        font-size: 8rem;
+        font-weight: 500;
+        isolation: isolate;
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="circle">
+        <svg viewBox="0 0 100 100">
+          <path id="arc" fill="#f43f5e" />
+        </svg>
+
+        <h1></h1>
+      </div>
+    </main>
+
+    <script type="module">
+      let today = new Date()
+      let wedding = new Date("2025-03-01T13:30:00-06:00")
+      let weddingDiff = diff(wedding, today)
+
+      document.querySelector("h1").innerText = weddingDiff
+
+      setInterval(() => {
+        let today = new Date()
+        let weddingDiff = diff(wedding, today)
+        document.querySelector("h1").innerText = weddingDiff
+      }, 1000 * 60)
+
+      function midnight(date) {
+        let midnight = new Date(date)
+        midnight.setHours(24, 0, 0, 0)
+        return midnight
+      }
+
+      function diff(a, b) {
+        let diff = midnight(a) - midnight(b)
+        let days = Math.floor(diff / (1000 * 60 * 60 * 24))
+        return days
+      }
+
+      function getCirclePoint(percentage) {
+        const angle = (percentage * 360 - 90) * (Math.PI / 180)
+
+        return {
+          x: 50 + 50 * Math.cos(angle),
+          y: 50 + 50 * Math.sin(angle),
+        }
+      }
+
+      function describeArc(percent) {
+        const point = getCirclePoint(percent)
+        const largeArcFlag = percent > 0.5 ? 1 : 0
+
+        // prettier-ignore
+        return [
+          "M50 50",
+          "L50 0",
+          "A50 50", 0, largeArcFlag, 1, point.x, point.y,
+          "L50 50",
+          "Z",
+        ].join(" ")
+      }
+
+      function animateArc(targetPercentage) {
+        const arc = document.getElementById("arc")
+        const steps = 60
+        let currentPercentage = 0
+
+        function step() {
+          const floored = Math.floor(currentPercentage, targetPercentage)
+
+          if (floored !== 100) {
+            arc.setAttribute("d", describeArc(floored / 100))
+          } else {
+            // prettier-ignore
+            const circle = [
+              "M50 50",
+              "L50 0",
+              "A50 50 0 0 1 50 100",
+              "A50 50 0 0 1 50 0",
+              "L50 50",
+              "Z",
+            ]
+
+            arc.setAttribute("d", circle.join(" "))
+          }
+
+          // If there is still a step to take...
+          if (currentPercentage <= targetPercentage) {
+            requestAnimationFrame(step)
+          }
+
+          // Then take a step...
+          currentPercentage += targetPercentage / steps
+        }
+
+        step()
+      }
+
+      animateArc(100 - weddingDiff)
+    </script>
+  </body>
+</html>
